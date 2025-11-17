@@ -116,8 +116,15 @@ if DATABASE_URL:
             default=DATABASE_URL,
             conn_max_age=600,
             conn_health_checks=True,
-            ssl_require=True,
+            ssl_require=False,  # Cambiar a False para Railway
+            engine='django.db.backends.postgresql',
         )
+    }
+    
+    # Opciones adicionales para PostgreSQL en Railway
+    DATABASES['default']['OPTIONS'] = {
+        'connect_timeout': 10,
+        'options': '-c statement_timeout=30000',
     }
 else:
     # Configuración para desarrollo local (SQLite)
