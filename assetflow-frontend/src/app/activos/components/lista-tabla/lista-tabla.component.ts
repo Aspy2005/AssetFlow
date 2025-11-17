@@ -1,84 +1,54 @@
-// src/app/activos/components/lista-tabla/lista-tabla.component.ts
-
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { CommonModule, CurrencyPipe } from '@angular/common'; 
+import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { Activo, Categoria } from '../../interfaces/activo.interface';
-import { DatePipe } from '@angular/common'; // Añadido DatePipe para el formato de fecha en la tabla
 
 @Component({
   selector: 'app-lista-tabla',
   templateUrl: './lista-tabla.component.html',
   styleUrls: ['./lista-tabla.component.css'],
   standalone: true,
-  imports: [
-    CommonModule,
-    CurrencyPipe,
-    DatePipe,
-  ]
+  imports: [CommonModule, CurrencyPipe, DatePipe]
 })
 export class ListaTablaComponent implements OnInit {
 
-  @Input() 
-  // Usamos 'any[]' para aceptar Activo[] o Categoria[]
-  datos: any[] = []; 
-
-  @Output()
-  itemEliminado = new EventEmitter<number>();
-
-  @Output() 
-  // Emitimos el objeto completo (Activo o Categoria)
-  itemEditado = new EventEmitter<any>(); 
-  
-  // Propiedad para diferenciar la vista de la tabla
-  esActivo: boolean = true; 
-
-  constructor() { }
+  @Input() datos: any[] = [];
+  @Output() itemEliminado = new EventEmitter<number>();
+  @Output() itemEditado = new EventEmitter<Activo | Categoria>();
+  @Output() itemVisualizado = new EventEmitter<Activo | Categoria>();
+  esActivo: boolean = true;
 
   ngOnInit(): void {
-    // Determinar si los datos son Activos o Categorías
-    if (this.datos && this.datos.length > 0) {
-      // Si el primer elemento tiene 'valor_inicial', asumimos que es un Activo
-      this.esActivo = 'valor_inicial' in this.datos[0];
-    } else {
-      // Si está vacío, por defecto, mostramos Activos, o puedes decidir lo contrario
-      this.esActivo = true;
-    }
+    this.esActivo = this.datos?.length > 0 && 'valor_inicial' in this.datos[0];
   }
 
   onEliminarItem(id: number): void {
     this.itemEliminado.emit(id);
   }
 
+  onVisualizarItem(item: Activo | Categoria): void {
+  this.itemVisualizado.emit(item);
+}
+
   onEditarItem(item: Activo | Categoria): void {
-    this.itemEditado.emit(item); 
+    this.itemEditado.emit(item);
   }
 
-  // --- Helpers de Formato (Específicos para Activos) ---
-
-  /**
-   * Obtiene la clase CSS para el badge del estado del Activo.
-   * @param estado Código de estado (AC, MA, DB, RE)
-   */
   getEstadoClass(estado: string): string {
-    const classes: { [key: string]: string } = {
-      'AC': 'badge-success',
-      'MA': 'badge-warning',
-      'DB': 'badge-danger',
-      'RE': 'badge-info'
+    const classes: Record<string, string> = {
+      AC: 'badge-success',
+      MA: 'badge-warning',
+      DB: 'badge-danger',
+      RE: 'badge-info'
     };
     return classes[estado] || 'badge-secondary';
   }
 
-  /**
-   * Formatea el código de estado a un nombre legible.
-   * @param estado Código de estado (AC, MA, DB, RE)
-   */
   formatearEstado(estado: string): string {
-    const estados: { [key: string]: string } = {
-      'AC': 'Activo',
-      'MA': 'Mantenimiento',
-      'DB': 'Dado de Baja',
-      'RE': 'En Reparación'
+    const estados: Record<string, string> = {
+      AC: 'Activo',
+      MA: 'Mantenimiento',
+      DB: 'Dado de Baja',
+      RE: 'En Reparación'
     };
     return estados[estado] || estado;
   }

@@ -11,71 +11,75 @@ import { Categoria } from '../../activos/interfaces/activo.interface';
   imports: [CommonModule, ReactiveFormsModule]
 })
 export class CategoriaFormComponent implements OnInit {
-  
-  @Input() 
-  categoriaInicial: Categoria | null = null; 
 
-  @Output() 
-  categoriaGuardada = new EventEmitter<Categoria>();
+  @Input() categoriaInicial: Categoria | null = null;
 
-  @Output() 
-  cancelar = new EventEmitter<void>(); 
+  @Output() categoriaGuardada = new EventEmitter<Categoria>();
+  @Output() cancelar = new EventEmitter<void>();
 
   public categoriaForm!: FormGroup;
-  public modoEdicion: boolean = false;
+  public modoEdicion = false;
 
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.modoEdicion = !!this.categoriaInicial;
     this.initForm();
 
     if (this.modoEdicion && this.categoriaInicial) {
-      // ⚠️ Solo cargar campos editables
-      this.categoriaForm.patchValue({
-        id: this.categoriaInicial.id,
-        nombre: this.categoriaInicial.nombre,
-        codigo: this.categoriaInicial.codigo,
-        descripcion: this.categoriaInicial.descripcion || '',
-        activa: this.categoriaInicial.activa
-      });
+      this.cargarCategoriaEnFormulario();
     }
   }
 
-  initForm(): void {
+
+  private initForm(): void {
     this.categoriaForm = this.fb.group({
-      id: [this.categoriaInicial?.id || null], 
+      id: [this.categoriaInicial?.id ?? null],
       nombre: ['', [Validators.required, Validators.maxLength(100)]],
       codigo: ['', [Validators.required, Validators.maxLength(10)]],
       descripcion: [''],
-      activa: [true]
+      activa: [this.categoriaInicial?.activa ?? true]
     });
   }
+
+
+  private cargarCategoriaEnFormulario(): void {
+    this.categoriaForm.patchValue({
+      id: this.categoriaInicial!.id,
+      nombre: this.categoriaInicial!.nombre,
+      codigo: this.categoriaInicial!.codigo,
+      descripcion: this.categoriaInicial!.descripcion ?? '',
+      activa: this.categoriaInicial!.activa
+    });
+  }
+
 
   get controls() {
     return this.categoriaForm.controls;
   }
 
+
   onSubmit(): void {
     if (this.categoriaForm.invalid) {
       this.categoriaForm.markAllAsTouched();
-      console.warn('⚠️ Formulario de categoría inválido:', this.categoriaForm.value);
+      console.warn('⚠️ Formulario inválido:', this.categoriaForm.value);
       return;
     }
 
-    // 🔧 Emitir solo los campos necesarios
+    const form = this.categoriaForm.value;
+
     const categoriaData: Categoria = {
-      id: this.categoriaForm.value.id || 0,
-      nombre: this.categoriaForm.value.nombre.trim(),
-      codigo: this.categoriaForm.value.codigo.trim().toUpperCase(),
-      descripcion: this.categoriaForm.value.descripcion?.trim() || '',
-      activa: this.categoriaForm.value.activa !== false // Por defecto true
+      id: form.id ?? 0,
+      nombre: form.nombre.trim(),
+      codigo: form.codigo.trim().toUpperCase(),
+      descripcion: form.descripcion?.trim() || '',
+      activa: form.activa !== false
     };
 
-    console.log('📤 Emitiendo categoría desde formulario:', categoriaData);
-    console.log('📤 Modo edición:', this.modoEdicion);
-    this.categoriaGuardada.emit(categoriaData); 
+    console.log('📤 Emitiendo categoría:', categoriaData, 'Modo edición:', this.modoEdicion);
+    this.categoriaGuardada.emit(categoriaData);
   }
+
 
   onCancel(): void {
     this.cancelar.emit();

@@ -1,59 +1,83 @@
 <form [formGroup]="categoriaForm" (ngSubmit)="onSubmit()">
 
-    <div class="form-group">
-        <label for="nombre">Nombre de Categoría</label>
-        <input 
-            id="nombre" 
-            type="text" 
-            formControlName="nombre" 
-            class="form-control"
-            placeholder="Ej: Equipos de Cómputo">
-        
-        <div *ngIf="controls['nombre'].invalid && (controls['nombre'].dirty || controls['nombre'].touched)" class="text-danger">
-            <small *ngIf="controls['nombre'].errors?.['required']">El nombre es obligatorio.</small>
-            <small *ngIf="controls['nombre'].errors?.['maxlength']">El nombre no puede exceder los 100 caracteres.</small>
-        </div>
-    </div>
+  <div class="form-group">
+    <label for="nombre">Nombre de Categoría</label>
 
-    <div class="form-group">
-        <label for="codigo">Código (Máx. 10 caracteres)</label>
-        <input 
-            id="codigo" 
-            type="text" 
-            formControlName="codigo" 
-            class="form-control"
-            placeholder="Ej: COMP">
-        
-        <div *ngIf="controls['codigo'].invalid && (controls['codigo'].dirty || controls['codigo'].touched)" class="text-danger">
-            <small *ngIf="controls['codigo'].errors?.['required']">El código es obligatorio.</small>
-            <small *ngIf="controls['codigo'].errors?.['maxlength']">El código no puede exceder los 10 caracteres.</small>
-        </div>
-    </div>
-    
-    <div class="form-group">
-        <label for="descripcion">Descripción</label>
-        <textarea 
-            id="descripcion" 
-            formControlName="descripcion" 
-            class="form-control"
-            rows="3"
-            placeholder="Descripción opcional de la categoría."></textarea>
-    </div>
+    <input
+      id="nombre"
+      type="text"
+      formControlName="nombre"
+      class="form-control"
+      placeholder="Ej: Equipos de Cómputo"
+    />
 
-    <div class="form-group-check">
-        <input 
-            id="activa" 
-            type="checkbox" 
-            formControlName="activa" 
-            class="form-check-input">
-        <label for="activa" class="form-check-label">Categoría activa</label>
+    <div
+      *ngIf="controls['nombre'].invalid && (controls['nombre'].touched || controls['nombre'].dirty)"
+      class="text-danger"
+    >
+      <small *ngIf="controls['nombre'].errors?.['required']">El nombre es obligatorio.</small>
+      <small *ngIf="controls['nombre'].errors?.['maxlength']">Máximo 100 caracteres.</small>
     </div>
+  </div>
 
-    <div class="form-actions">
-        <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancelar</button>
-        <button type="submit" class="btn btn-primary" [disabled]="categoriaForm.invalid">
-            {{ modoEdicion ? 'Guardar Cambios' : 'Crear Categoría' }}
-        </button>
+  <div class="form-group">
+    <label for="codigo">Código (máx. 10 caracteres)</label>
+
+    <input
+      id="codigo"
+      type="text"
+      formControlName="codigo"
+      class="form-control"
+      placeholder="Ej: COMP"
+    />
+
+    <div
+      *ngIf="controls['codigo'].invalid && (controls['codigo'].touched || controls['codigo'].dirty)"
+      class="text-danger"
+    >
+      <small *ngIf="controls['codigo'].errors?.['required']">El código es obligatorio.</small>
+      <small *ngIf="controls['codigo'].errors?.['maxlength']">Máximo 10 caracteres.</small>
     </div>
+  </div>
+
+  <div class="form-group">
+    <label for="descripcion">Descripción</label>
+
+    <textarea
+      id="descripcion"
+      formControlName="descripcion"
+      class="form-control"
+      rows="3"
+      placeholder="Descripción opcional de la categoría."
+    ></textarea>
+  </div>
+
+  <div class="form-group-check">
+    <input
+      id="activa"
+      type="checkbox"
+      formControlName="activa"
+      class="form-check-input"
+    />
+    <label for="activa" class="form-check-label">Categoría activa</label>
+  </div>
+
+  <div class="form-actions">
+    <button
+      type="button"
+      class="btn btn-secondary"
+      (click)="onCancel()"
+    >
+      Cancelar
+    </button>
+
+    <button
+      type="submit"
+      class="btn btn-primary"
+      [disabled]="categoriaForm.invalid"
+    >
+      {{ modoEdicion ? 'Guardar Cambios' : 'Crear Categoría' }}
+    </button>
+  </div>
 
 </form>

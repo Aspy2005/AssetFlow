@@ -1,107 +1,71 @@
-<!-- src/app/activos/pages/activo-page/activo-page.component.html -->
-
-<!-- Header de la página -->
 <div class="page-header">
-  <h2>AssetFlow - Gestión de Activos</h2>
-  <button 
-    class="btn btn-primary" 
-    (click)="abrirFormularioCreacion()"
-    [disabled]="cargando">
-    <span>➕</span> Nuevo Activo
-  </button>
+  <h2>AssetFlow - Gestión de Activos</h2>
+  <button class="btn btn-primary" (click)="abrirFormularioCreacion()" [disabled]="cargando">
+    <span>➕</span> Nuevo Activo
+  </button>
 </div>
 
-<!-- Indicador de carga -->
 <div *ngIf="cargando" class="loading-overlay">
-  <div class="spinner"></div>
-  <p>Cargando activos...</p>
+  <div class="spinner"></div>
+  <p>Cargando activos...</p>
 </div>
 
-<!-- Mensaje de error global -->
 <div *ngIf="errorCarga" class="alert alert-danger">
-  <strong>⚠️ Error de Conexión</strong>
-  <p>No se pudo conectar con la API del Backend.</p>
-  <button class="btn btn-sm btn-outline-danger" (click)="recargarActivos()">
-    🔄 Reintentar
-  </button>
+  <strong>⚠️ Error de Conexión</strong>
+  <p>No se pudo conectar con la API del Backend.</p>
+  <button class="btn btn-sm btn-outline-danger" (click)="recargarActivos()">🔄 Reintentar</button>
 </div>
 
-<!-- Mensajes al usuario (éxito/error) -->
-<div 
-  *ngIf="mensajeUsuario" 
-  class="alert"
-  [ngClass]="{
-    'alert-success': tipoMensaje === 'success',
-    'alert-danger': tipoMensaje === 'error',
-    'alert-info': tipoMensaje === 'info'
-  }"
-  role="alert">
-  <span 
-    class="close-btn" 
-    (click)="cerrarMensaje()"
-    title="Cerrar">
-    ✕
-  </span>
-  <div style="white-space: pre-line;">{{ mensajeUsuario }}</div>
+<div *ngIf="mensajeUsuario" class="alert" [ngClass]="{
+    'alert-success': tipoMensaje === 'success',
+    'alert-danger': tipoMensaje === 'error',
+    'alert-info': tipoMensaje === 'info'
+  }" role="alert">
+  <span class="close-btn" (click)="cerrarMensaje()" title="Cerrar">✕</span>
+  <div style="white-space: pre-line;">{{ mensajeUsuario }}</div>
 </div>
 
-<!-- Contenedor principal con datos -->
 <div *ngIf="!cargando">
-  
-  <!-- Caso: Lista vacía (sin filtros aplicados) -->
-  <div *ngIf="(activos$ | async)?.length === 0" class="empty-state">
-    <div class="empty-icon">📦</div>
-    <h3>No hay activos registrados</h3>
-    <p>Comience agregando su primer activo al sistema.</p>
-    <button class="btn btn-primary" (click)="abrirFormularioCreacion()">
-      ➕ Crear Primer Activo
-    </button>
-  </div>
 
-  <!-- Caso: Hay datos -->
-  <div *ngIf="(activos$ | async)?.length! > 0">
-    
-    <!-- Filtros -->
-    <div class="filtros-container">
-      <input 
-        type="text" 
-        class="form-control" 
-        placeholder="🔍 Buscar activo..."
-        #searchInput
-        (input)="filtrarActivos(searchInput.value)">
-      
-      <select 
-        class="form-control"
-        #categoriaSelect
-        (change)="filtrarPorCategoria(categoriaSelect.value)">
-        <option value="">Todas las categorías</option>
-        <option 
-          *ngFor="let categoria of categorias$ | async" 
-          [value]="categoria.id">
-          {{ categoria.nombre }}
-        </option>
-      </select>
+    <div *ngIf="activosFiltrados$ | async as activos; else cargandoTemplate">
 
-      <select 
-        class="form-control"
-        #estadoSelect
-        (change)="filtrarPorEstado(estadoSelect.value)">
-        <option value="">Todos los estados</option>
-        <option value="AC">Activo</option>
-        <option value="MA">En Mantenimiento</option>
-        <option value="DB">Dado de Baja</option>
-        <option value="RE">En Reparación</option>
-      </select>
+        <div *ngIf="(activos$ | async)?.length === 0" class="empty-state">
+      <div class="empty-icon">📦</div>
+      <h3>No hay activos registrados</h3>
+      <p>Comience agregando su primer activo al sistema.</p>
+      <button class="btn btn-primary" (click)="abrirFormularioCreacion()">
+        ➕ Crear Primer Activo
+      </button>
+    </div>
 
-      <button 
-        class="btn btn-secondary"
-        (click)="limpiarFiltros(); searchInput.value=''; categoriaSelect.value=''; estadoSelect.value=''">
-        🗑️ Limpiar Filtros
-      </button>
-    </div>
+        <div *ngIf="(activos$ | async)?.length! > 0">
 
-    <!-- Resumen con activos filtrados -->
-    <div class="summary-cards" *ngIf="activosFiltrados$ | async as activosFiltrados">
+      <div class="filtros-container">
+        <input type="text" class="form-control" placeholder="🔍 Buscar activo..." #searchInput
+          (input)="filtrarActivos(searchInput.value)" />
+
+        <select class="form-control" #categoriaSelect (change)="filtrarPorCategoria(categoriaSelect.value)">
+          <option value="">Todas las categorías</option>
+          <option *ngFor="let categoria of categorias$ | async" [value]="categoria.id">
+            {{ categoria.nombre }}
+          </option>
+        </select>
+
+        <select class="form-control" #estadoSelect (change)="filtrarPorEstado(estadoSelect.value)">
+          <option value="">Todos los estados</option>
+          <option value="AC">Activo</option>
+          <option value="MA">En Mantenimiento</option>
+          <option value="DB">Dado de Baja</option>
+          <option value="RE">En Reparación</option>
+        </select>
+
+        <button class="btn btn-secondary"
+          (click)="limpiarFiltros(); searchInput.value=''; categoriaSelect.value=''; estadoSelect.value='';">
+          🗑️ Limpiar Filtros
+        </button>
+      </div>
+
+      <div class="summary-cards" *ngIf="activosFiltrados$ | async as activosFiltrados">
       <div class="summary-card">
         <div class="summary-icon">📊</div>
         <div class="summary-content">
@@ -141,48 +105,71 @@
       </div>
     </div>
 
-    <!-- Tabla de activos (usa lista filtrada) -->
-    <div *ngIf="activosFiltrados$ | async as activosFiltrados">  
-      
-      <!-- Caso: Filtros activos pero sin resultados -->
-      <div *ngIf="activosFiltrados.length === 0" class="empty-state">
-        <div class="empty-icon">🔍</div>
-        <h3>No hay activos que coincidan con los filtros</h3>
-        <p>Intente ajustar o limpiar los filtros para ver más resultados.</p>
-        <button 
-          class="btn btn-secondary" 
-          (click)="limpiarFiltros(); searchInput.value=''; categoriaSelect.value=''; estadoSelect.value=''">
-          🗑️ Limpiar Filtros
-        </button>
-      </div>
+      <div *ngIf="activos.length === 0" class="empty-state">
+        <div class="empty-icon">🔍</div>
+        <h3>No hay activos que coincidan con los filtros</h3>
+        <p>Intente ajustar o limpiar los filtros para ver más resultados.</p>
+        <button class="btn btn-secondary"
+          (click)="limpiarFiltros(); searchInput.value=''; categoriaSelect.value=''; estadoSelect.value='';">
+          🗑️ Limpiar Filtros
+        </button>
+      </div>
 
-      <!-- Caso: Hay resultados filtrados -->
-      <div *ngIf="activosFiltrados.length > 0">
-        <app-lista-tabla 
-          [datos]="activosFiltrados"
-          (itemEliminado)="manejarEliminacion($event)"
-          (itemEditado)="manejarEdicion($event)">
-        </app-lista-tabla>
-      </div>
-      
-    </div>
-  </div>
+      <div *ngIf="activos.length > 0">
+        <app-lista-tabla 
+          [datos]="activos" 
+          (itemEliminado)="manejarEliminacion($event)"
+          (itemEditado)="manejarEdicion($event)"
+          (itemVisualizado)="manejarVisualizacion($event)">         </app-lista-tabla>
+      </div>
+
+    </div>
+  </div>
 </div>
 
-<!-- Modal de formulario -->
+<ng-template #cargandoTemplate>
+  <div class="loading-placeholder">
+    <div class="skeleton-row" *ngFor="let item of [1,2,3,4,5]"></div>
+  </div>
+</ng-template>
+
 <div *ngIf="mostrarFormulario" class="modal-overlay" (click)="cerrarFormulario()">
-  <div class="modal-content" (click)="$event.stopPropagation()">
-    <div class="modal-header">
-      <h3>{{ modoEdicion ? 'Editar Activo: ' + activoAEditar?.nombre : 'Nuevo Activo' }}</h3>
-      <button class="close-btn" (click)="cerrarFormulario()">✕</button>
-    </div>
-    <div class="modal-body">
-      <app-activo-form
-        [activoInicial]="activoAEditar"
-        [categorias]="(categorias$ | async) || []"
-        (activoGuardado)="manejarGuardado($event)"
-        (cancelar)="cerrarFormulario()">
-      </app-activo-form>
-    </div>
-  </div>
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>{{ modoEdicion ? 'Editar Activo: ' + activoAEditar?.nombre : 'Nuevo Activo' }}</h3>
+      <button class="close-btn" (click)="cerrarFormulario()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <app-activo-form [activoInicial]="activoAEditar" [categorias]="(categorias$ | async) || []"
+        (activoGuardado)="manejarGuardado($event)" (cancelar)="cerrarFormulario()"></app-activo-form>
+    </div>
+    
+  </div>
+</div>
+
+<div *ngIf="mostrarDetalles" class="modal-overlay" (click)="cerrarDetalles()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    
+    <div class="modal-header">
+      <h3>Detalles del Activo: {{ activoAVisualizar?.nombre }}</h3>
+      <button class="close-btn" (click)="cerrarDetalles()">✕</button>
+    </div>
+
+    <div class="modal-body" *ngIf="activoAVisualizar as activo">
+      <div class="details-grid">
+        <p><strong>ID:</strong> {{ activo.id }}</p>
+        <p><strong>Categoría:</strong> {{ activo.categoria_nombre }}</p>
+        <p><strong>Valor Inicial:</strong> {{ activo.valor_inicial_formatted || (activo.valor_inicial | currency:'USD':'symbol':'1.2-2') }}</p>
+        <p><strong>Fecha Adquisición:</strong> {{ activo.fecha_adquisicion | date:'longDate' }}</p>
+        <p><strong>Estado:</strong> {{ activo.estado_display }}</p>
+
+        </div>
+    </div>
+    
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="cerrarDetalles()">Cerrar</button>
+    </div>
+
+  </div>
 </div>

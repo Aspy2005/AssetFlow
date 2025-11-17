@@ -1,6 +1,3 @@
-<!-- src/app/activos/components/lista-tabla/lista-tabla.component.html -->
-
-<!-- ✅ Tabla para ACTIVOS -->
 <div *ngIf="esActivo">
   <table class="table">
     <thead>
@@ -22,32 +19,20 @@
         <td>{{ activo.fecha_adquisicion | date:'dd/MM/yy' }}</td>
         <td>{{ activo.valor_inicial | currency:'USD':'symbol':'1.2-2' }}</td>
         <td>
-          <span 
-            class="badge" 
-            [ngClass]="getEstadoClass(activo.estado_display || '')">
+          <span class="badge" [ngClass]="getEstadoClass(activo.estado_display || '')">
             {{ formatearEstado(activo.estado_display || '') }}
           </span>
         </td>
         <td>
-          <button 
-            class="btn btn-sm btn-primary" 
-            (click)="onEditarItem(activo)"
-            title="Editar">
-            ✏️
-          </button>
-          <button 
-            class="btn btn-sm btn-danger" 
-            (click)="onEliminarItem(activo.id)"
-            title="Eliminar">
-            🗑️
-          </button>
+          <button class="btn btn-sm btn-info" (click)="onVisualizarItem(activo)">👁️</button>
+          <button class="btn btn-sm btn-primary" (click)="onEditarItem(activo)">✏️</button>
+          <button class="btn btn-sm btn-danger" (click)="onEliminarItem(activo.id)">🗑️</button>
         </td>
       </tr>
     </tbody>
   </table>
 </div>
 
-<!-- ✅ Tabla para CATEGORÍAS -->
 <div *ngIf="!esActivo">
   <table class="table">
     <thead>
@@ -69,27 +54,16 @@
         <td><span class="badge badge-secondary">{{ categoria.codigo }}</span></td>
         <td>{{ categoria.descripcion || 'Sin descripción' }}</td>
         <td>
-          <span 
-            class="badge" 
-            [ngClass]="categoria.activa ? 'badge-success' : 'badge-secondary'">
+          <span class="badge" [ngClass]="categoria.activa ? 'badge-success' : 'badge-secondary'">
             {{ categoria.activa ? 'Activa' : 'Inactiva' }}
           </span>
         </td>
         <td>{{ categoria.total_activos || 0 }}</td>
         <td>{{ (categoria.valor_total || 0) | currency:'USD':'symbol':'1.2-2' }}</td>
         <td>
-          <button 
-            class="btn btn-sm btn-primary" 
-            (click)="onEditarItem(categoria)"
-            title="Editar">
-            ✏️
-          </button>
-          <button 
-            class="btn btn-sm btn-danger" 
-            (click)="onEliminarItem(categoria.id)"
-            title="Eliminar">
-            🗑️
-          </button>
+          <button class="btn btn-sm btn-info" (click)="onVisualizarItem(categoria)">👁️</button>
+          <button class="btn btn-sm btn-primary" (click)="onEditarItem(categoria)">✏️</button>
+          <button class="btn btn-sm btn-danger" (click)="onEliminarItem(categoria.id)">🗑️</button>
         </td>
       </tr>
     </tbody>

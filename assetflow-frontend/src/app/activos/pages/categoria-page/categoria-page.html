@@ -1,84 +1,128 @@
 <div class="page-header">
-    <h2>AssetFlow - Gestión de Categorías</h2>
-    <button 
-        class="btn btn-primary" 
-        (click)="abrirFormularioCreacion()"
-        [disabled]="cargando">
-        <span>➕</span> Nueva Categoría
-    </button>
+  <h2>AssetFlow - Gestión de Categorías</h2>
+
+  <button 
+    class="btn btn-primary"
+    (click)="abrirFormularioCreacion()"
+    [disabled]="cargando">
+    ➕ Nueva Categoría
+  </button>
 </div>
 
 <div *ngIf="cargando" class="loading-overlay">
-    <div class="spinner"></div>
-    <p>Cargando categorías...</p>
+  <div class="spinner"></div>
+  <p>Cargando categorías...</p>
 </div>
 
 <div *ngIf="errorCarga" class="alert alert-danger">
-    <strong>⚠️ Error de Conexión</strong>
-    <p>No se pudo conectar con la API de Categorías. {{ errorCarga.message }}</p>
-    <button class="btn btn-sm btn-outline-danger" (click)="recargarCategorias()">
-        🔄 Reintentar
-    </button>
+  <strong>⚠️ Error de Conexión</strong>
+  <p>No se pudo conectar con la API de Categorías. {{ errorCarga.message }}</p>
+  
+  <button class="btn btn-sm btn-outline-danger" (click)="recargarCategorias()">
+    🔄 Reintentar
+  </button>
 </div>
 
 <div 
-    *ngIf="mensajeUsuario" 
-    class="alert"
-    [ngClass]="{
-      'alert-success': tipoMensaje === 'success',
-      'alert-danger': tipoMensaje === 'error',
-      'alert-info': tipoMensaje === 'info'
-    }"
-    role="alert">
-    <span 
-      class="close-btn" 
-      (click)="cerrarMensaje()"
-      title="Cerrar">
-      ✕
-    </span>
-    <div style="white-space: pre-line;">{{ mensajeUsuario }}</div>
+  *ngIf="mensajeUsuario"
+  class="alert"
+  [ngClass]="{
+    'alert-success': tipoMensaje === 'success',
+    'alert-danger': tipoMensaje === 'error',
+    'alert-info': tipoMensaje === 'info'
+  }"
+  role="alert">
+
+  <span class="close-btn" (click)="cerrarMensaje()" title="Cerrar">✕</span>
+
+  <div style="white-space: pre-line;">
+    {{ mensajeUsuario }}
+  </div>
 </div>
 
 <div *ngIf="categorias$ | async as categorias; else cargandoTemplate">
-    
-        <div *ngIf="categorias.length === 0 && !cargando" class="empty-state">
-        <div class="empty-icon">📂</div>
-        <h3>No hay categorías registradas</h3>
-        <p>Comience agregando su primera categoría.</p>
-        <button class="btn btn-primary" (click)="abrirFormularioCreacion()">
-            ➕ Crear Primera Categoría
-        </button>
-    </div>
 
-        <div *ngIf="categorias.length > 0" class="categorias-container">
-        
-        <app-lista-tabla 
-            [datos]="categorias"
-            (itemEliminado)="manejarEliminacion($event)"
-            (itemEditado)="manejarEdicion($event)">
-        </app-lista-tabla>
+  <div *ngIf="categorias.length === 0 && !cargando" class="empty-state">
+    <div class="empty-icon">📂</div>
+    <h3>No hay categorías registradas</h3>
+    <p>Comience agregando su primera categoría.</p>
 
-    </div>
+    <button class="btn btn-primary" (click)="abrirFormularioCreacion()">
+      ➕ Crear Primera Categoría
+    </button>
+  </div>
+
+  <div *ngIf="categorias.length > 0" class="categorias-container">
+
+    <app-lista-tabla
+      [datos]="categorias"
+      (itemEliminado)="manejarEliminacion($event)"
+      (itemEditado)="manejarEdicion($any($event))"
+      (itemVisualizado)="manejarVisualizacion($any($event))">     </app-lista-tabla>
+
+  </div>
 </div>
 
 <ng-template #cargandoTemplate>
-    <div class="loading-placeholder">
-        <div class="skeleton-row" *ngFor="let item of [1,2,3,4,5]"></div>
-    </div>
+  <div class="loading-placeholder">
+    <div class="skeleton-row" *ngFor="let item of [1,2,3,4,5]"></div>
+  </div>
 </ng-template>
 
-<div *ngIf="mostrarFormulario" class="modal-overlay" (click)="cerrarFormulario()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-        <div class="modal-header">
-            <h3>{{ modoEdicion ? 'Editar Categoría: ' + categoriaAEditar?.nombre : 'Nueva Categoría' }}</h3>
-            <button class="close-btn" (click)="cerrarFormulario()">✕</button>
-        </div>
-        <div class="modal-body">
-                        <app-categoria-form
-                [categoriaInicial]="categoriaAEditar"
-                (categoriaGuardada)="manejarGuardado($event)"
-                (cancelar)="cerrarFormulario()">
-            </app-categoria-form>
-        </div>
+<div 
+  *ngIf="mostrarFormulario"
+  class="modal-overlay"
+  (click)="cerrarFormulario()">
+
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    
+    <div class="modal-header">
+      <h3>
+        {{ modoEdicion ? 'Editar Categoría: ' + categoriaAEditar?.nombre : 'Nueva Categoría' }}
+      </h3>
+
+      <button class="close-btn" (click)="cerrarFormulario()">✕</button>
     </div>
+
+    <div class="modal-body">
+      <app-categoria-form
+        [categoriaInicial]="categoriaAEditar"
+        (categoriaGuardada)="manejarGuardado($event)"
+        (cancelar)="cerrarFormulario()">
+      </app-categoria-form>
+    </div>
+
+  </div>
+</div>
+
+<div *ngIf="mostrarDetalles" class="modal-overlay" (click)="cerrarDetalles()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    
+    <div class="modal-header">
+      <h3>Detalles de la Categoría: {{ categoriaAVisualizar?.nombre }}</h3>
+      <button class="close-btn" (click)="cerrarDetalles()">✕</button>
+    </div>
+
+    <div class="modal-body" *ngIf="categoriaAVisualizar as categoria">
+      <div class="details-grid">
+        <p><strong>ID:</strong> {{ categoria.id }}</p>
+        <p><strong>Código:</strong> {{ categoria.codigo }}</p>
+        <p><strong>Activa:</strong> 
+          <span class="badge" [ngClass]="categoria.activa ? 'badge-success' : 'badge-secondary'">
+            {{ categoria.activa ? 'Sí' : 'No' }}
+          </span>
+        </p>
+        <p><strong>Total Activos:</strong> {{ categoria.total_activos || 0 }}</p>
+        <p><strong>Valor Total:</strong> {{ (categoria.valor_total || 0) | currency:'USD':'symbol':'1.2-2' }}</p>
+        <p><strong>Creado en:</strong> {{ categoria.creado_en | date:'short' }}</p>
+        <p><strong>Actualizado en:</strong> {{ categoria.actualizado_en | date:'short' }}</p>
+        <p class="full-row"><strong>Descripción:</strong> {{ categoria.descripcion || 'Sin descripción' }}</p>
+      </div>
+    </div>
+    
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="cerrarDetalles()">Cerrar</button>
+    </div>
+
+  </div>
 </div>
