@@ -6,6 +6,12 @@ import sys
 
 def main():
     """Run administrative tasks."""
+    # ----------------------------------------------------------------------
+    # CORRECCIÓN: Agregar el directorio actual (assetflow_backend) al Python Path
+    # Esto permite que Python encuentre el módulo 'assetflow_backend'
+    # ----------------------------------------------------------------------
+    sys.path.append(os.path.dirname(os.path.abspath(__file__))) 
+    
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'assetflow_backend.settings')
     try:
         from django.core.management import execute_from_command_line
