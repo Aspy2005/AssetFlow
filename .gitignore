@@ -12,6 +12,18 @@ local_settings.py
 db.sqlite3
 db.sqlite3-journal
 
+# Static files
+/staticfiles/
+/static_root/
+
+# Media files
+/media/
+/mediafiles/
+
+# Logs directory
+/logs/
+*.log
+
 # Virtual environments
 venv/
 env/
@@ -69,3 +81,17 @@ yarn-error.log*
 coverage/
 *.coverage
 .pytest_cache/
+.tox/
+htmlcov/
+
+# ===================================
+# RAILWAY / DEPLOYMENT
+# ===================================
+.railway/
+
+# ===================================
+# BACKUP FILES
+# ===================================
+*.bak
+*.tmp
+*.backup
