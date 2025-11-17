@@ -2,7 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { catchError, map, tap, retry } from 'rxjs/operators';
-import { Activo, Categoria } from '../activos/interfaces/activo.interface';
+
+// Importar el objeto 'environment' para acceder a 'apiUrl'
+import { environment } from '../../environments/environment'; 
+
+// Ajusta esta ruta si es necesario
+import { Activo, Categoria } from '../activos/interfaces/activo.interface'; 
 
 
 export interface FiltrosActivo {
@@ -26,8 +31,8 @@ export interface PaginatedResponse<T> {
   providedIn: 'root'
 })
 export class ActivoService {
-
-  private readonly apiUrl = 'http://localhost:8000/api/v1/activos/';
+  // CORREGIDO: Usar la variable de entorno
+  private readonly baseUrl = `${environment.apiUrl}/activos/`;
   
   private activosSubject = new BehaviorSubject<Activo[]>([]);
   public activos$ = this.activosSubject.asObservable();
@@ -46,7 +51,7 @@ export class ActivoService {
       if (filtros.search) params = params.set('search', filtros.search);
     }
 
-    return this.http.get<PaginatedResponse<Activo>>(this.apiUrl, { params }).pipe(
+    return this.http.get<PaginatedResponse<Activo>>(this.baseUrl, { params }).pipe(
       map(response => response.results),
       retry(1),
       tap(activos => {
@@ -59,7 +64,7 @@ export class ActivoService {
 
 
   getActivo(id: number): Observable<Activo> {
-    return this.http.get<Activo>(`${this.apiUrl}${id}/`).pipe(
+    return this.http.get<Activo>(`${this.baseUrl}${id}/`).pipe(
       tap(activo => console.log(`📄 Activo ${id} cargado: ${activo.nombre}`)),
       catchError(this.handleError)
     );
@@ -67,7 +72,7 @@ export class ActivoService {
 
 
   crearActivo(activo: Partial<Activo>): Observable<Activo> {
-    return this.http.post<Activo>(this.apiUrl, activo).pipe(
+    return this.http.post<Activo>(this.baseUrl, activo).pipe(
       tap(nuevoActivo => {
         console.log(`✅ Activo creado: ${nuevoActivo.nombre} (ID: ${nuevoActivo.id})`);
         const lista = this.activosSubject.value;
@@ -79,7 +84,7 @@ export class ActivoService {
 
 
   actualizarActivo(id: number, activo: Activo): Observable<Activo> {
-    return this.http.put<Activo>(`${this.apiUrl}${id}/`, activo).pipe(
+    return this.http.put<Activo>(`${this.baseUrl}${id}/`, activo).pipe(
       tap(actualizado => {
         console.log(`✏️ Activo ${id} actualizado: ${actualizado.nombre}`);
         const lista = this.activosSubject.value;
@@ -95,15 +100,15 @@ export class ActivoService {
 
 
   actualizarParcial(id: number, cambios: Partial<Activo>): Observable<Activo> {
-    return this.http.patch<Activo>(`${this.apiUrl}${id}/`, cambios).pipe(
+    return this.http.patch<Activo>(`${this.baseUrl}${id}/`, cambios).pipe(
       tap(() => console.log(`🔧 Activo ${id} modificado parcialmente`)),
       catchError(this.handleError)
     );
   }
 
- 
+  
   eliminarActivo(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}${id}/`).pipe(
+    return this.http.delete<void>(`${this.baseUrl}${id}/`).pipe(
       tap(() => {
         console.log(`🗑️ Activo ${id} eliminado`);
         const lista = this.activosSubject.value.filter(a => a.id !== id);
@@ -115,7 +120,7 @@ export class ActivoService {
 
 
   getResumen(): Observable<any> {
-    return this.http.get(`${this.apiUrl}resumen/`).pipe(
+    return this.http.get(`${this.baseUrl}resumen/`).pipe(
       catchError(this.handleError)
     );
   }
@@ -140,18 +145,21 @@ export class ActivoService {
 }
 
 
+// --------------------------------------------------------------------------
+
 @Injectable({
   providedIn: 'root'
 })
 export class CategoriaService {
 
-  private readonly apiUrl = 'http://localhost:8000/api/v1/categorias/';
+  // CORREGIDO: Usar la variable de entorno
+  private readonly baseUrl = `${environment.apiUrl}/categorias/`;
 
   constructor(private http: HttpClient) {}
 
 
   getCategorias(): Observable<Categoria[]> {
-    return this.http.get<PaginatedResponse<Categoria>>(this.apiUrl).pipe(
+    return this.http.get<PaginatedResponse<Categoria>>(this.baseUrl).pipe(
       map(response => response.results),
       retry(1),
       tap(cats => console.log(`📁 ${cats.length} categorías cargadas`)),
@@ -161,35 +169,35 @@ export class CategoriaService {
 
 
   getCategoria(id: number): Observable<Categoria> {
-    return this.http.get<Categoria>(`${this.apiUrl}${id}/`).pipe(
+    return this.http.get<Categoria>(`${this.baseUrl}${id}/`).pipe(
       catchError(this.handleError)
     );
   }
 
 
   crearCategoria(categoria: Partial<Categoria>): Observable<Categoria> {
-    return this.http.post<Categoria>(this.apiUrl, categoria).pipe(
+    return this.http.post<Categoria>(this.baseUrl, categoria).pipe(
       tap(cat => console.log(`✅ Categoría creada: ${cat.nombre}`)),
       catchError(this.handleError)
     );
   }
 
   actualizarCategoria(id: number, categoria: Categoria): Observable<Categoria> {
-    return this.http.put<Categoria>(`${this.apiUrl}${id}/`, categoria).pipe(
+    return this.http.put<Categoria>(`${this.baseUrl}${id}/`, categoria).pipe(
       catchError(this.handleError)
     );
   }
 
 
   eliminarCategoria(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}${id}/`).pipe(
+    return this.http.delete<void>(`${this.baseUrl}${id}/`).pipe(
       catchError(this.handleError)
     );
   }
 
 
   getEstadisticas(id: number): Observable<any> {
-    return this.http.get(`${this.apiUrl}${id}/estadisticas/`).pipe(
+    return this.http.get(`${this.baseUrl}${id}/estadisticas/`).pipe(
       catchError(this.handleError)
     );
   }
