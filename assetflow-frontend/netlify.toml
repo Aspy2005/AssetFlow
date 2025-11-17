@@ -1,6 +1,6 @@
 [build]
-  command = "npm run build -- --base-href=/" # <-- ¡Añadir este flag!
-  publish = "dist/assetflow-frontend"
+  command = "npm run build -- --configuration production"
+  publish = "dist/assetflow-frontend/browser"
   base = "assetflow-frontend"
 
 [[redirects]]

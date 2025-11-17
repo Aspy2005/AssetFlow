@@ -17,15 +17,19 @@
             "tsConfig": "tsconfig.app.json",
             "assets": [
               {
+                "glob": "**/*",
+                "input": "public",
+                "output": "/"
+              },
+              {
                 "glob": "_redirects",
-                  "input": "./",
-                   "output": "./"
+                "input": "./",
+                "output": "/"
               }
             ],
             "styles": [
               "src/styles.css"
             ]
-           
           },
           "configurations": {
             "production": {
