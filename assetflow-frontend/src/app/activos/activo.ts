@@ -4,7 +4,7 @@ import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { catchError, map, tap, retry } from 'rxjs/operators';
 
 // Importar el objeto 'environment' para acceder a 'apiUrl'
-import { environment } from '../../environments/environment'; 
+import { environment } from '../../environments/environment.prod'
 
 // Ajusta esta ruta si es necesario
 import { Activo, Categoria } from '../activos/interfaces/activo.interface'; 
