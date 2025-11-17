@@ -1,0 +1,97 @@
+<!-- src/app/activos/components/lista-tabla/lista-tabla.component.html -->
+
+<!-- ✅ Tabla para ACTIVOS -->
+<div *ngIf="esActivo">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre Activo</th>
+        <th>Categoría</th>
+        <th>Fecha Adquisición</th>
+        <th>Valor</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let activo of datos">
+        <td>{{ activo.id }}</td>
+        <td>{{ activo.nombre }}</td>
+        <td>{{ activo.categoria_nombre }}</td>
+        <td>{{ activo.fecha_adquisicion | date:'dd/MM/yy' }}</td>
+        <td>{{ activo.valor_inicial | currency:'USD':'symbol':'1.2-2' }}</td>
+        <td>
+          <span 
+            class="badge" 
+            [ngClass]="getEstadoClass(activo.estado_display || '')">
+            {{ formatearEstado(activo.estado_display || '') }}
+          </span>
+        </td>
+        <td>
+          <button 
+            class="btn btn-sm btn-primary" 
+            (click)="onEditarItem(activo)"
+            title="Editar">
+            ✏️
+          </button>
+          <button 
+            class="btn btn-sm btn-danger" 
+            (click)="onEliminarItem(activo.id)"
+            title="Eliminar">
+            🗑️
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ✅ Tabla para CATEGORÍAS -->
+<div *ngIf="!esActivo">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Código</th>
+        <th>Descripción</th>
+        <th>Estado</th>
+        <th>Total Activos</th>
+        <th>Valor Total</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let categoria of datos">
+        <td>{{ categoria.id }}</td>
+        <td>{{ categoria.nombre }}</td>
+        <td><span class="badge badge-secondary">{{ categoria.codigo }}</span></td>
+        <td>{{ categoria.descripcion || 'Sin descripción' }}</td>
+        <td>
+          <span 
+            class="badge" 
+            [ngClass]="categoria.activa ? 'badge-success' : 'badge-secondary'">
+            {{ categoria.activa ? 'Activa' : 'Inactiva' }}
+          </span>
+        </td>
+        <td>{{ categoria.total_activos || 0 }}</td>
+        <td>{{ (categoria.valor_total || 0) | currency:'USD':'symbol':'1.2-2' }}</td>
+        <td>
+          <button 
+            class="btn btn-sm btn-primary" 
+            (click)="onEditarItem(categoria)"
+            title="Editar">
+            ✏️
+          </button>
+          <button 
+            class="btn btn-sm btn-danger" 
+            (click)="onEliminarItem(categoria.id)"
+            title="Eliminar">
+            🗑️
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

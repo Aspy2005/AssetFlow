@@ -1,0 +1,238 @@
+<form [formGroup]="activoForm" (ngSubmit)="onSubmit()">
+
+    <div class="form-group">
+        <label for="nombre">Nombre del Activo *</label>
+        <input 
+            id="nombre" 
+            type="text" 
+            formControlName="nombre" 
+            class="form-control"
+            placeholder="Ej: Laptop Dell XPS 15">
+        
+        <div *ngIf="controls['nombre'].invalid && (controls['nombre'].dirty || controls['nombre'].touched)" class="text-danger">
+            <small *ngIf="controls['nombre'].errors?.['required']">El nombre es obligatorio.</small>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-md-6">
+            <label for="categoria">Categoría *</label>
+            <select 
+                id="categoria" 
+                formControlName="categoria" 
+                class="form-control">
+                <option value="" disabled>Seleccione una categoría</option>
+                <option 
+                    *ngFor="let cat of categorias" 
+                    [value]="cat.id">
+                    {{ cat.nombre }}
+                </option>
+            </select>
+            <div *ngIf="controls['categoria'].invalid && (controls['categoria'].dirty || controls['categoria'].touched)" class="text-danger">
+                <small>La categoría es obligatoria.</small>
+            </div>
+        </div>
+
+        <div class="form-group col-md-6">
+            <label for="estado">Estado *</label>
+            <select 
+                id="estado" 
+                formControlName="estado" 
+                class="form-control">
+                <option 
+                    *ngFor="let estado of estados" 
+                    [value]="estado.value">
+                    {{ estado.label }}
+                </option>
+            </select>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-md-6">
+            <label for="fecha_adquisicion">Fecha de Adquisición *</label>
+            <input 
+                id="fecha_adquisicion" 
+                type="date" 
+                formControlName="fecha_adquisicion" 
+                class="form-control">
+            <div *ngIf="controls['fecha_adquisicion'].invalid && (controls['fecha_adquisicion'].dirty || controls['fecha_adquisicion'].touched)" class="text-danger">
+                <small>La fecha es obligatoria.</small>
+            </div>
+        </div>
+
+        <div class="form-group col-md-6">
+            <label for="valor_inicial">Valor Inicial (USD) *</label>
+            <input 
+                id="valor_inicial" 
+                type="number" 
+                step="0.01"
+                formControlName="valor_inicial" 
+                class="form-control"
+                placeholder="0.00">
+            <div *ngIf="controls['valor_inicial'].invalid && (controls['valor_inicial'].dirty || controls['valor_inicial'].touched)" class="text-danger">
+                <small *ngIf="controls['valor_inicial'].errors?.['required']">El valor es obligatorio.</small>
+                <small *ngIf="controls['valor_inicial'].errors?.['min']">El valor debe ser positivo.</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🆕 Campos adicionales opcionales -->
+    <div class="row">
+        <div class="form-group col-md-6">
+            <label for="numero_serie">Número de Serie</label>
+            <input 
+                id="numero_serie" 
+                type="text" 
+                formControlName="numero_serie" 
+                class="form-control"
+                placeholder="Ej: SN123456789">
+        </div>
+
+        <div class="form-group col-md-6">
+            <label for="ubicacion">Ubicación</label>
+            <input 
+                id="ubicacion" 
+                type="text" 
+                formControlName="ubicacion" 
+                class="form-control"
+                placeholder="Ej: Oficina 201, Piso 2">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="responsable">Responsable</label>
+        <input 
+            id="responsable" 
+            type="text" 
+            formControlName="responsable" 
+            class="form-control"
+            placeholder="Ej: Juan Pérez - Departamento de TI">
+    </div>
+    
+    <div class="form-group">
+        <label for="descripcion">Descripción / Notas</label>
+        <textarea 
+            id="descripcion" 
+            formControlName="descripcion" 
+            class="form-control"
+            rows="3"
+            placeholder="Detalles adicionales, especificaciones técnicas, o notas importantes."></textarea>
+    </div>
+
+    <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancelar</button>
+        <button type="submit" class="btn btn-primary" [disabled]="activoForm.invalid">
+            {{ modoEdicion ? 'Guardar Cambios' : 'Crear Activo' }}
+        </button>
+    </div>
+
+</form>
+
+<style>
+.form-group { 
+    margin-bottom: 1rem; 
+}
+
+.form-group label { 
+    display: block; 
+    margin-bottom: 0.25rem; 
+    font-weight: 500; 
+    color: #495057; 
+}
+
+.form-control { 
+    width: 100%; 
+    padding: 0.75rem; 
+    border: 1px solid #ced4da; 
+    border-radius: 0.3rem; 
+    font-size: 1rem; 
+    box-sizing: border-box;
+    transition: border-color 0.15s ease-in-out;
+}
+
+.form-control:focus {
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.form-control:disabled {
+    background-color: #e9ecef;
+    opacity: 1;
+}
+
+.text-danger { 
+    color: #dc3545; 
+    font-size: 0.85rem; 
+    margin-top: 0.25rem; 
+}
+
+.form-actions { 
+    display: flex; 
+    justify-content: flex-end; 
+    gap: 0.75rem; 
+    padding-top: 1rem; 
+    border-top: 1px solid #eee; 
+    margin-top: 1.5rem;
+}
+
+.row { 
+    display: flex; 
+    gap: 1rem; 
+    margin-left: -0.5rem;
+    margin-right: -0.5rem;
+}
+
+.col-md-6 { 
+    flex: 1; 
+    min-width: 45%;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+/* Estilos para botones */
+.btn {
+    padding: 0.5rem 1.5rem;
+    border: none;
+    border-radius: 0.3rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background-color: #0056b3;
+}
+
+.btn-primary:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #545b62;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .row {
+        flex-direction: column;
+    }
+    
+    .col-md-6 {
+        min-width: 100%;
+    }
+}
+</style>

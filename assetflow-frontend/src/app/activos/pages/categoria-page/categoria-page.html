@@ -1,0 +1,84 @@
+<div class="page-header">
+    <h2>AssetFlow - Gestión de Categorías</h2>
+    <button 
+        class="btn btn-primary" 
+        (click)="abrirFormularioCreacion()"
+        [disabled]="cargando">
+        <span>➕</span> Nueva Categoría
+    </button>
+</div>
+
+<div *ngIf="cargando" class="loading-overlay">
+    <div class="spinner"></div>
+    <p>Cargando categorías...</p>
+</div>
+
+<div *ngIf="errorCarga" class="alert alert-danger">
+    <strong>⚠️ Error de Conexión</strong>
+    <p>No se pudo conectar con la API de Categorías. {{ errorCarga.message }}</p>
+    <button class="btn btn-sm btn-outline-danger" (click)="recargarCategorias()">
+        🔄 Reintentar
+    </button>
+</div>
+
+<div 
+    *ngIf="mensajeUsuario" 
+    class="alert"
+    [ngClass]="{
+      'alert-success': tipoMensaje === 'success',
+      'alert-danger': tipoMensaje === 'error',
+      'alert-info': tipoMensaje === 'info'
+    }"
+    role="alert">
+    <span 
+      class="close-btn" 
+      (click)="cerrarMensaje()"
+      title="Cerrar">
+      ✕
+    </span>
+    <div style="white-space: pre-line;">{{ mensajeUsuario }}</div>
+</div>
+
+<div *ngIf="categorias$ | async as categorias; else cargandoTemplate">
+    
+        <div *ngIf="categorias.length === 0 && !cargando" class="empty-state">
+        <div class="empty-icon">📂</div>
+        <h3>No hay categorías registradas</h3>
+        <p>Comience agregando su primera categoría.</p>
+        <button class="btn btn-primary" (click)="abrirFormularioCreacion()">
+            ➕ Crear Primera Categoría
+        </button>
+    </div>
+
+        <div *ngIf="categorias.length > 0" class="categorias-container">
+        
+        <app-lista-tabla 
+            [datos]="categorias"
+            (itemEliminado)="manejarEliminacion($event)"
+            (itemEditado)="manejarEdicion($event)">
+        </app-lista-tabla>
+
+    </div>
+</div>
+
+<ng-template #cargandoTemplate>
+    <div class="loading-placeholder">
+        <div class="skeleton-row" *ngFor="let item of [1,2,3,4,5]"></div>
+    </div>
+</ng-template>
+
+<div *ngIf="mostrarFormulario" class="modal-overlay" (click)="cerrarFormulario()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h3>{{ modoEdicion ? 'Editar Categoría: ' + categoriaAEditar?.nombre : 'Nueva Categoría' }}</h3>
+            <button class="close-btn" (click)="cerrarFormulario()">✕</button>
+        </div>
+        <div class="modal-body">
+                        <app-categoria-form
+                [categoriaInicial]="categoriaAEditar"
+                (categoriaGuardada)="manejarGuardado($event)"
+                (cancelar)="cerrarFormulario()">
+            </app-categoria-form>
+        </div>
+    </div>
+</div>

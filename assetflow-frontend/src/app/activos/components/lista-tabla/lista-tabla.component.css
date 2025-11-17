@@ -1,0 +1,79 @@
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 0.5rem;
+    overflow: hidden; /* Necesario para que el borde se aplique bien */
+    box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+}
+
+.table thead {
+    background-color: #e9ecef;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.table th, .table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #f0f0f0; /* Separador de filas más suave */
+    font-size: 0.95rem;
+    color: #343a40;
+}
+
+.table th {
+    font-weight: 600;
+    color: #495057;
+    white-space: nowrap; /* Evita que las cabeceras se rompan */
+}
+
+/* Estilos de las filas */
+.table tbody tr:hover {
+    background-color: #f8f9fa; /* Efecto hover */
+}
+
+/* Botones de acción dentro de la tabla */
+.table td .btn {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+    border-radius: 0.2rem;
+}
+
+.btn-info {
+    background-color: #17a2b8;
+    color: white;
+}
+.btn-info:hover {
+    background-color: #138496;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+}
+.btn-danger:hover {
+    background-color: #c82333;
+}
+
+.me-2 {
+    margin-right: 0.5rem;
+}
+
+/* ==================================== */
+/* BADGES (Estados de Activos) */
+/* ==================================== */
+
+.badge {
+    padding: 0.3em 0.6em;
+    border-radius: 0.25rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: white;
+    text-transform: uppercase;
+    display: inline-block;
+}
+
+.badge-success { background-color: #28a745; } /* AC: Activo */
+.badge-warning { background-color: #ffc107; color: #333; } /* MA: Mantenimiento */
+.badge-danger { background-color: #dc3545; } /* DB: Dado de Baja */
+.badge-info { background-color: #17a2b8; } /* RE: En Reparación */
+.badge-secondary { background-color: #6c757d; } /* Default */

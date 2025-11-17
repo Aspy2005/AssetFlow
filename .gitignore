@@ -1,0 +1,71 @@
+# ===================================
+# PYTHON / DJANGO
+# ===================================
+*.pyc
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django stuff
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# Django migrations (opcional - yo prefiero incluirlas)
+# */migrations/*.py
+# !*/migrations/__init__.py
+
+# ===================================
+# ANGULAR / NODE
+# ===================================
+node_modules/
+dist/
+.angular/
+.tmp/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Build files
+*.tsbuildinfo
+
+# ===================================
+# ENVIRONMENT VARIABLES
+# ===================================
+.env
+.env.local
+.env.*.local
+
+# ===================================
+# LOGS
+# ===================================
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ===================================
+# COVERAGE / TESTING
+# ===================================
+coverage/
+*.coverage
+.pytest_cache/
