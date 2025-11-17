@@ -1,5 +1,5 @@
 [build]
-  command = "npm run build"
+  command = "npm run build -- --base-href=/" # <-- ¡Añadir este flag!
   publish = "dist/assetflow-frontend"
   base = "assetflow-frontend"
 
